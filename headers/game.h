@@ -1,24 +1,27 @@
 #ifndef GAME_H
 #define GAME_H
+#include <stdio.h>
+#include <stdio.h>
 #include <SDL.h>
-#include "sdl_utils.h"
-
+#include <SDL_image.h>
+#include "../headers/imgui/imgui.h"
+#include "../headers/imgui/imgui_impl_sdl2.h"
+#include "../headers/imgui/imgui_impl_sdlrenderer2.h"
+#include "../headers/imgui/imgui_stdlib.h"
 
 class Game {
 public:
 SDL_Window *window;
 SDL_Renderer *renderer;
+float imcolor[4] = { (float)0 / 255, (float)255 / 255, (float)64 / 255, (float)64 / 255 };
 // Screen dimension constants
 
 
 int Setup();
 int Run();
 int Exit();
-private:
-const int SCREEN_HEIGHT = 480;
-const int SCREEN_WIDTH = 640;
-const int BG_R = 128;
-const int BG_G = 153;
-const int BG_B = 151;
+int ImGuiSetup();
+
+
 };
 #endif

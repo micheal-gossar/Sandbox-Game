@@ -1,5 +1,4 @@
-#define UNITY_BUILD 1
-#include "game.h"
+#include "../headers/game.h"
 
 int main(int argc, char *args[]) {
 Game mainGame;
