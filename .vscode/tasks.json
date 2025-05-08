@@ -4,7 +4,7 @@
         {
             "label": "Build linux",
             "type": "shell",
-            "command": "sh ${workspaceRoot}/build-linux.sh",
+            "command": "sh ${workspaceFolder}/build-linux.sh",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
@@ -14,7 +14,7 @@
         {
             "label": "Build windows",
             "type": "shell",
-            "command": "${workspaceRoot}/build-win.bat",
+            "command": "make",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
@@ -24,7 +24,7 @@
         {
             "label": "Build mac",
             "type": "shell",
-            "command": "${workspaceRoot}/build-mac.sh",
+            "command": "${workspaceFolder}/build-mac.sh",
             "problemMatcher": [],
             "group": {
                 "kind": "build",

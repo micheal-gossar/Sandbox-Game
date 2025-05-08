@@ -1,6 +1,7 @@
+#include <SDL.h>
 #include "../headers/game.h"
 
-int main(int argc, char* args[]) {
+int SDL_main(int argc, char* args[]) {
 Game mainGame;
 
 mainGame.Run();
