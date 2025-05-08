@@ -1,27 +1,32 @@
 #include "../headers/game.h"
 
-int Game::ImGuiSetup() {
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO& io = ImGui::GetIO(); (void)io;
-    ImGui_ImplSDL2_InitForSDLRenderer(this->window, this->renderer);
-    ImGui_ImplSDLRenderer2_Init(this->renderer);
-
-    return 0;
-}
 
 int Game::Setup() {
     SDL_Init(SDL_INIT_EVERYTHING);
+#ifdef SDL_HINT_IME_SHOW_UI
+    SDL_SetHint(SDL_HINT_IME_SHOW_UI, "1");
+#endif
     window = SDL_CreateWindow("Sandbox Game",50,30,1280,720,SDL_WINDOW_SHOWN);
-    renderer = SDL_CreateRenderer(window, -1, 0);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED);
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+    // Setup Dear ImGui style
+    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsLight();
+
+    // Setup Platform/Renderer backends
+    ImGui_ImplSDL2_InitForSDLRenderer(window, renderer);
+    ImGui_ImplSDLRenderer2_Init(renderer);
 return 0;
 }
 
 int Game::Run() {
-Setup();
+Setup();  
 
-ImGuiSetup();    
-ImGui::ColorEdit4("Change BG SDL2", imcolor);
     while (1)
     {
         SDL_Event event;
@@ -39,15 +44,23 @@ ImGui::ColorEdit4("Change BG SDL2", imcolor);
         SDL_RenderClear(this->renderer);
         
         SDL_RenderPresent(this->renderer);
-}
+        {
+            ImGui::Begin("Edit Color");
+            ImGui::ColorEdit4("Change BG SDL2", imcolor);
+            ImGui::End();
+        }
+        ImGui::Render();
+    }//End of Loop
 		
 Exit();
 return 0;
 }
 
 int Game::Exit() {
+    ImGui_ImplSDLRenderer2_Shutdown();
     ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
+
     SDL_DestroyRenderer(this->renderer);
     SDL_DestroyWindow(this->window);
     SDL_Quit();
