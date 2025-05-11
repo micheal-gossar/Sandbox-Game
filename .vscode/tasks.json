@@ -14,7 +14,7 @@
         {
             "label": "Build windows",
             "type": "shell",
-            "command": "make",
+            "command": "${workspaceFolder}/build-win.bat",
             "problemMatcher": [],
             "group": {
                 "kind": "build",

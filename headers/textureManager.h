@@ -1,44 +1,19 @@
-#ifndef TEXTURE_MANAGER_H
-#define TEXTURE_MANAGER_H
+#ifndef TEXTUREMANAGER_H
+#define TEXTUREMANAGER_H
 
-#include <unordered_map>
-#include <string>
 #include <SDL.h>
-#include <SDL_image.h>
-#include <iostream>
-#include "textureID.h"
+#include <string>
+#include <map>
 
 class TextureManager {
 public:
-    static bool Load(SDL_Renderer* renderer, const textureID& id, const std::string& path) {
-        SDL_Surface* surface = IMG_Load(path.c_str());
-        if (!surface) return false;
-
-        SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-        SDL_FreeSurface(surface);
-        if (!texture) {
-            std::cout << "Texture " << id.id << " failed." << std::endl;
-            return false;
-        }
-
-        textures[id] = texture;
-        return true;
-    }
-
-    static SDL_Texture* Get(const textureID& id) {
-        auto it = textures.find(id);
-        return it != textures.end() ? it->second : nullptr;
-    }
-
-    static void Cleanup() {
-        for (auto& [id, texture] : textures) {
-            SDL_DestroyTexture(texture);
-        }
-        textures.clear();
-    }
+    static bool Load(const std::string& id, const std::string& filename, SDL_Renderer* renderer);
+    static void Draw(const std::string& id, SDL_Rect srcRect, SDL_Rect destRect, SDL_Renderer* renderer);
+    static SDL_Texture* GetTexture(const std::string& id);
+    static void Cleanup();
 
 private:
-    static std::unordered_map<textureID, SDL_Texture*, textureID::Hasher> textures;
+    static std::map<std::string, SDL_Texture*> s_textures;
 };
 
-#endif
+#endif // TEXTUREMANAGER_H

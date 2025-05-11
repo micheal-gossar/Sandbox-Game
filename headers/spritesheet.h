@@ -1,25 +1,23 @@
 #ifndef SPRITESHEET_H
 #define SPRITESHEET_H
+
 #include <SDL.h>
-#include "textureID.h"
-#include "sprite.h"
-#include <vector>
+#include <string>
 
 class Spritesheet {
-    Spritesheet(SDL_Surface s, int l, int nR, int nC, int pX, int pY, SDL_Renderer* r):
-    spritesheet(s),layer(l),numOfRows(nR),numOfCollums(nC),pixelX(pX),pixelY(pY),renderer(r){
+public:
+    Spritesheet(const std::string& textureID, int spriteWidth, int spriteHeight);
 
-    };
-    ~Spritesheet() {};
+    void Update();  // Call once per frame to animate
+    void Draw(SDL_Renderer* renderer, int x, int y, int scale = 1);  // Draw current sprite frame
+    void SetGridSize(int sheetWidth, int sheetHeight);  // Set size of full sheet in pixels
 
 private:
-std::vector<Sprite<int>> sprites;
-    int numOfRows;
-    int numOfCollums;
-    int pixelX;
-    int pixelY;
-    int layer;
-    SDL_Renderer* renderer;
-    SDL_Surface spritesheet;
+    std::string m_textureID;
+    int m_spriteWidth, m_spriteHeight;
+    int m_sheetWidth, m_sheetHeight;
+    int m_currentFrame = 0;
+    int m_totalFrames = 0;
 };
-#endif
+
+#endif // SPRITESHEET_H

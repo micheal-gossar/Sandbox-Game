@@ -2,36 +2,28 @@
 #define SPRITE_H
 
 #include <SDL.h>
-#include "textureID.h"
-#include "textureManager.h"
 
-template <class T>
+// The Sprite class represents a 2D sprite, with position, size, and speed.
 class Sprite {
 public:
-    Sprite(SDL_Renderer* renderer, const textureID& texID)
-        : textureIDValue(texID)
-    {
-        texture = TextureManager::Get(texID);
-    }
+    // Constructor to initialize the sprite with optional parameters for position, size, and speed
+    Sprite(float startX = 0.0f, float startY = 0.0f, int spriteWidth = 32, int spriteHeight = 32, float startSpeed = 1.0f);
 
-    void Draw(SDL_Renderer* renderer, int x, int y) {
-        if (!texture) return;
+    // Update the sprite's position based on its speed and the time elapsed (deltaTime)
+    void Update(float deltaTime);
 
-        SDL_Rect dst = { x, y, width, height };
-        SDL_RenderCopy(renderer, texture, nullptr, &dst);
-    }
-
-    void SetSize(int w, int h) {
-        width = w;
-        height = h;
-    }
+    // Draw the sprite to the screen at its current position
+    void Draw(SDL_Renderer* renderer, SDL_Texture* texture);
 
 private:
-    textureID textureIDValue;
-    SDL_Texture* texture = nullptr;
-    int width = 64;
-    int height = 64;
+    // Position of the sprite
+    float x, y;
+
+    // Size of the sprite
+    int width, height;
+
+    // Speed of the sprite
+    float speed;
 };
 
-
-#endif
+#endif // SPRITE_H

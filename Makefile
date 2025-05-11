@@ -1,52 +1,47 @@
 # === Configuration ===
 SRC_DIR := src
-BUILD_DIR := ../build/win
+HEADER_DIR := headers
+IMGUI_SRC_DIR := $(SRC_DIR)/imgui
+IMGUI_HEADER_DIR := $(HEADER_DIR)/imgui
+BUILD_DIR := build
 RES_DIR := res
 
-INCLUDE_DIRS := -ID:/Developement/TestGame1/SandboxGame/headers \
-                -ID:/Developement/TestGame1/SandboxGame/headers/imgui \
+INCLUDE_DIRS := -I$(SRC_DIR) -I$(HEADER_DIR) -I$(IMGUI_HEADER_DIR) \
                 -IC:/sdl2/include/SDL2
 
 LIB_DIRS := -LC:/sdl2/lib
-LIBS = -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
+LIBS := -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
-CXXFLAGS := -g -ggdb -c $(INCLUDE_DIRS)
-LDFLAGS := $(LIB_DIRS) $(LIBS)
+CXXFLAGS := -g -std=c++17 $(INCLUDE_DIRS)
 
-# === Collect Source Files ===
-# Use wildcards to collect all the .cpp files in src and its subdirectories
-SRCS := $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/**/*.cpp)
-# Object files corresponding to the source files
-OBJS := $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
+# === Source Files ===
+SRC_FILES := $(wildcard $(SRC_DIR)/*.cpp) \
+             $(wildcard $(SRC_DIR)/imgui/imgui*.cpp) \
+             $(SRC_DIR)/imgui/imgui_impl_sdl2.cpp \
+             $(SRC_DIR)/imgui/imgui_impl_sdlrenderer2.cpp
 
+OBJ_FILES := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(SRC_FILES))
 
 TARGET := $(BUILD_DIR)/main.exe
 
-# === Default target: build everything ===
+# === Default target ===
 all: $(TARGET)
 
-# Link object files into the executable
-$(TARGET): $(OBJS)
+# === Link the executable ===
+$(TARGET): $(OBJ_FILES)
 	@echo "Linking..."
-	@mkdir -p $(BUILD_DIR)
-	g++ $(OBJS) -o $@ $(LDFLAGS)
-	@echo "Copying resources..."
-	@rm -rf $(BUILD_DIR)/res
-	@cp -r $(RES_DIR) $(BUILD_DIR)/res
-	@echo "Launching..."
-	@start $(TARGET)
+	@mkdir -p $(BUILD_DIR)/res
+	$(CXX) $^ -o $@ $(CXXFLAGS) $(LIB_DIRS) $(LIBS)
 
-# Rule to compile individual source files into object files
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
+# === Compile each file ===
+$(BUILD_DIR)/%.o: %.cpp
 	@echo "Compiling $<"
 	@mkdir -p $(dir $@)
-	g++ $(CXXFLAGS) -o $@ $<
-	@touch $@  # Mark the object file as up-to-date
+	$(CXX) -c $< -o $@ $(CXXFLAGS)
 
-# Clean up build files
+# === Clean ===
 clean:
-	@echo "Cleaning up..."
-	@rm -rf $(BUILD_DIR)
+	@echo "Cleaning..."
+	rm -rf $(BUILD_DIR)
 
-# .PHONY tells make that these are not files but commands
-.PHONY: all clean
+.PHONY: all clean run
